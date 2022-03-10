@@ -87,7 +87,7 @@ func SearchAndExtractExifN(data []byte, n int) (rawExif []byte, err error) {
 
 		var discarded int
 
-		rawExif, discarded, err = searchAndExtractExifWithReaderWithDiscarded(b)
+		rawExif, discarded, err = SearchAndExtractExifWithReaderWithDiscarded(b)
 		if err != nil {
 			if err == ErrNoExif {
 				return nil, err
@@ -116,12 +116,12 @@ func SearchAndExtractExifN(data []byte, n int) (rawExif []byte, err error) {
 	return rawExif, nil
 }
 
-// searchAndExtractExifWithReaderWithDiscarded searches for an EXIF blob using
+// SearchAndExtractExifWithReaderWithDiscarded searches for an EXIF blob using
 // an `io.Reader`. We can't know how much long the EXIF data is without parsing
 // it, so this will likely grab up a lot of the image-data, too.
 //
 // This function returned the count of preceding bytes.
-func searchAndExtractExifWithReaderWithDiscarded(r io.Reader) (rawExif []byte, discarded int, err error) {
+func SearchAndExtractExifWithReaderWithDiscarded(r io.Reader) (rawExif []byte, discarded int, err error) {
 	defer func() {
 		if state := recover(); state != nil {
 			err = log.Wrap(state.(error))
@@ -172,7 +172,7 @@ func searchAndExtractExifWithReaderWithDiscarded(r io.Reader) (rawExif []byte, d
 	return rawExif, discarded, nil
 }
 
-// RELEASE(dustin): We should replace the implementation of SearchAndExtractExifWithReader with searchAndExtractExifWithReaderWithDiscarded and drop the latter.
+// RELEASE(dustin): We should replace the implementation of SearchAndExtractExifWithReader with SearchAndExtractExifWithReaderWithDiscarded and drop the latter.
 
 // SearchAndExtractExifWithReader searches for an EXIF blob using an
 // `io.Reader`. We can't know how much long the EXIF data is without parsing it,
@@ -184,7 +184,7 @@ func SearchAndExtractExifWithReader(r io.Reader) (rawExif []byte, err error) {
 		}
 	}()
 
-	rawExif, _, err = searchAndExtractExifWithReaderWithDiscarded(r)
+	rawExif, _, err = SearchAndExtractExifWithReaderWithDiscarded(r)
 	if err != nil {
 		if err == ErrNoExif {
 			return nil, err
